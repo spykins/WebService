@@ -6,15 +6,20 @@ import android.os.Bundle;
 import android.text.method.ScrollingMovementMethod;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 
 public class MainActivity extends AppCompatActivity {
     private TextView output;
+    private ProgressBar progressBar;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        progressBar = (ProgressBar) findViewById(R.id.progressBar1);
+        progressBar.setVisibility(View.INVISIBLE);
 
         output = (TextView) findViewById(R.id.textView);
         output.setMovementMethod(new ScrollingMovementMethod());
@@ -41,6 +46,7 @@ public class MainActivity extends AppCompatActivity {
         @Override
         protected void onPreExecute() {
             updateDisplay("Starting task");
+            progressBar.setVisibility(View.VISIBLE);
         }
 
         @Override
@@ -61,6 +67,8 @@ public class MainActivity extends AppCompatActivity {
         @Override
         protected void onPostExecute(String result) {
             updateDisplay(result);
+            progressBar.setVisibility(View.INVISIBLE);
+
         }
 
         @Override
