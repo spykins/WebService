@@ -1,5 +1,6 @@
 package com.andela.webservice;
 
+import android.os.AsyncTask;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.text.method.ScrollingMovementMethod;
@@ -17,10 +18,6 @@ public class MainActivity extends AppCompatActivity {
 
         output = (TextView) findViewById(R.id.textView);
         output.setMovementMethod(new ScrollingMovementMethod());
-
-        for(int i = 0; i<100; i++) {
-            updateDisplay("Task " + i);
-        }
     }
 
     @Override
@@ -31,13 +28,46 @@ public class MainActivity extends AppCompatActivity {
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        if(item.getItemId() == R.id.action_do_task) {
-            updateDisplay("Task done!");
-        }
+        MyTask task = new MyTask();
+        task.execute("param1", "param2", "param3");
         return true;
     }
 
     private void updateDisplay(String s) {
         output.append(s + "\n");
     }
+
+    private class MyTask extends AsyncTask<String, String, String> {
+        @Override
+        protected void onPreExecute() {
+            updateDisplay("Starting task");
+        }
+
+        @Override
+        protected String doInBackground(String... params) {
+            for(int i = 0; i< params.length; i++) {
+                publishProgress("working with " + params[i]);
+
+                try {
+                    Thread.sleep(1000);
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+            }
+
+            return "Task Complete";
+        }
+
+        @Override
+        protected void onPostExecute(String result) {
+            updateDisplay(result);
+        }
+
+        @Override
+        protected void onProgressUpdate(String... values) {
+            updateDisplay(values[0]);
+        }
+    }
+
+
 }
