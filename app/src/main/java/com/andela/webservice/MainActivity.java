@@ -34,7 +34,11 @@ public class MainActivity extends AppCompatActivity {
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         MyTask task = new MyTask();
-        task.execute("param1", "param2", "param3");
+        //This makes serial request
+        //task.execute("param1", "param2", "param3");
+        //For parrallel processing
+        task.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, "param1", "param2", "param3");
+
         return true;
     }
 
