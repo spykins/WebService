@@ -10,7 +10,8 @@
     tools:context="com.andela.webservice.MainActivity">
 
     <TextView
-        android:layout_width="wrap_content"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Hello World!" />
+        android:id="@+id/textView"
+        android:scrollbars="vertical"/>
 </RelativeLayout>
