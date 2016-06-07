@@ -10,9 +10,13 @@ import android.view.View;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
+import java.util.ArrayList;
+import java.util.List;
+
 public class MainActivity extends AppCompatActivity {
     private TextView output;
     private ProgressBar progressBar;
+    List<MyTask> tasks;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -20,6 +24,7 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
         progressBar = (ProgressBar) findViewById(R.id.progressBar1);
         progressBar.setVisibility(View.INVISIBLE);
+        tasks = new ArrayList<>();
 
         output = (TextView) findViewById(R.id.textView);
         output.setMovementMethod(new ScrollingMovementMethod());
@@ -38,7 +43,6 @@ public class MainActivity extends AppCompatActivity {
         //task.execute("param1", "param2", "param3");
         //For parrallel processing
         task.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, "param1", "param2", "param3");
-
         return true;
     }
 
@@ -50,7 +54,10 @@ public class MainActivity extends AppCompatActivity {
         @Override
         protected void onPreExecute() {
             updateDisplay("Starting task");
-            progressBar.setVisibility(View.VISIBLE);
+            if(tasks.size() == 0) {
+                progressBar.setVisibility(View.VISIBLE);
+            }
+            tasks.add(this);
         }
 
         @Override
@@ -71,8 +78,10 @@ public class MainActivity extends AppCompatActivity {
         @Override
         protected void onPostExecute(String result) {
             updateDisplay(result);
-            progressBar.setVisibility(View.INVISIBLE);
-
+            tasks.remove(this);
+            if(tasks.size() == 0) {
+                progressBar.setVisibility(View.INVISIBLE);
+            }
         }
 
         @Override
