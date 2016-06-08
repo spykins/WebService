@@ -7,7 +7,7 @@ public class Flower {
     private int productId;
     private String name;
     private String category;
-    private String instruction;
+    private String instructions;
     private double price;
     private String photo;
 
@@ -19,12 +19,12 @@ public class Flower {
         this.category = category;
     }
 
-    public String getInstruction() {
-        return instruction;
+    public String getInstructions() {
+        return instructions;
     }
 
-    public void setInstruction(String instruction) {
-        this.instruction = instruction;
+    public void setInstructions(String instructions) {
+        this.instructions = instructions;
     }
 
     public String getName() {
