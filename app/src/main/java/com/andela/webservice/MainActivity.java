@@ -14,13 +14,17 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.andela.webservice.model.Flower;
+import com.andela.webservice.parser.FlowerXmlParser;
+
 import java.util.ArrayList;
 import java.util.List;
 
 public class MainActivity extends AppCompatActivity {
     private TextView output;
     private ProgressBar progressBar;
-    List<MyTask> tasks;
+    private List<MyTask> tasks;
+    private List<Flower> flowerList;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -29,7 +33,6 @@ public class MainActivity extends AppCompatActivity {
         progressBar = (ProgressBar) findViewById(R.id.progressBar1);
         progressBar.setVisibility(View.INVISIBLE);
         tasks = new ArrayList<>();
-
         output = (TextView) findViewById(R.id.textView);
         output.setMovementMethod(new ScrollingMovementMethod());
     }
@@ -61,8 +64,13 @@ public class MainActivity extends AppCompatActivity {
         //task.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, "param1", "param2", "param3");
     }
 
-    private void updateDisplay(String s) {
-        output.append(s + "\n");
+    private void updateDisplay() {
+        if(flowerList != null) {
+            for (Flower flower : flowerList) {
+                output.append(flower.getName() + "\n");
+            }
+
+        }
     }
 
     protected boolean isOnline() {
@@ -78,7 +86,7 @@ public class MainActivity extends AppCompatActivity {
     private class MyTask extends AsyncTask<String, String, String> {
         @Override
         protected void onPreExecute() {
-            updateDisplay("Starting task");
+            //updateDisplay("Starting task");
             if(tasks.size() == 0) {
                 progressBar.setVisibility(View.VISIBLE);
             }
@@ -93,7 +101,10 @@ public class MainActivity extends AppCompatActivity {
 
         @Override
         protected void onPostExecute(String result) {
-            updateDisplay(result);
+
+            flowerList = FlowerXmlParser.parseFeed(result);
+
+            updateDisplay();
             tasks.remove(this);
             if(tasks.size() == 0) {
                 progressBar.setVisibility(View.INVISIBLE);
@@ -102,7 +113,7 @@ public class MainActivity extends AppCompatActivity {
 
         @Override
         protected void onProgressUpdate(String... values) {
-            updateDisplay(values[0]);
+            //updateDisplay(values[0]);
         }
     }
 
