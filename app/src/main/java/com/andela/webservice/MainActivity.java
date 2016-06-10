@@ -48,7 +48,7 @@ public class MainActivity extends AppCompatActivity {
     public boolean onOptionsItemSelected(MenuItem item) {
         if(item.getItemId() == R.id.action_do_task) {
             if(isOnline()) {
-                requestData("http://services.hanselandpetal.com/feeds/flowers.json");
+                requestData("http://services.hanselandpetal.com/secure/flowers.json");
             } else {
                 Toast.makeText(this, "Network isn't available", Toast.LENGTH_LONG).show();
             }
