@@ -102,14 +102,19 @@ public class MainActivity extends AppCompatActivity {
 
         @Override
         protected void onPostExecute(String result) {
-
-            //flowerList = FlowerXmlParser.parseFeed(result);
-            flowerList = FlowerJsonParser.parseFeed(result);
-            updateDisplay();
             tasks.remove(this);
             if(tasks.size() == 0) {
                 progressBar.setVisibility(View.INVISIBLE);
             }
+
+            //flowerList = FlowerXmlParser.parseFeed(result);
+            if(result == null) {
+                Toast.makeText(MainActivity.this, "Can't connect to webservice", Toast.LENGTH_LONG).show();
+                return;
+            }
+            flowerList = FlowerJsonParser.parseFeed(result);
+            updateDisplay();
+
         }
 
         @Override
