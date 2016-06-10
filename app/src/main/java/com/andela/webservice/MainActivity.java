@@ -96,7 +96,7 @@ public class MainActivity extends AppCompatActivity {
 
         @Override
         protected String doInBackground(String... params) {
-            String content = HttpManager.getData(params[0]);
+            String content = HttpManager.getData(params[0],"feeduser","feedpassword");
             return content;
         }
 
