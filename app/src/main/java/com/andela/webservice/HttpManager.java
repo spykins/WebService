@@ -1,6 +1,8 @@
 package com.andela.webservice;
 
 
+import android.util.Base64;
+
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
@@ -88,6 +90,45 @@ public class HttpManager {
         return builder.toString();
         }
         */
+        return null;
+    }
+
+    public static String getData(String uri, String userName, String password) {
+
+        BufferedReader reader = null;
+        byte[] loginByte = (userName + ":" + password).getBytes();
+        //Now we have a byte Array represent the credentials..
+        StringBuilder loginBuilder = new StringBuilder()
+                .append("Basic ")
+                .append(Base64.encodeToString(loginByte, Base64.DEFAULT));
+        //Now the loginBuilder contains the credential, encoded and ready to send to the webServer
+
+        try{
+            URL url = new URL(uri);
+            HttpURLConnection con = (HttpURLConnection) url.openConnection();
+            /*
+                Before connecting with the connection Object, we need to set a request property
+                The header value... The header value will have a name of Authorisation and a value
+                created by the loginBuilder object
+             */
+
+            con.addRequestProperty("AUTHORIZATION", loginBuilder.toString());
+            //Now as long as we connect with the correct userName and password...
+            // you should be able to connect and get data back
+
+            StringBuilder sb = new StringBuilder();
+            reader = new BufferedReader(new InputStreamReader(con.getInputStream()));
+            String line;
+            while((line = reader.readLine()) != null) {
+                sb.append(line + "\n");
+            }
+            return sb.toString();
+        } catch (MalformedURLException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
         return null;
     }
 
