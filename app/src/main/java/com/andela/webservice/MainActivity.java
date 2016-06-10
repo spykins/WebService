@@ -15,6 +15,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.andela.webservice.model.Flower;
+import com.andela.webservice.parser.FlowerJsonParser;
 import com.andela.webservice.parser.FlowerXmlParser;
 
 import java.util.ArrayList;
@@ -47,7 +48,7 @@ public class MainActivity extends AppCompatActivity {
     public boolean onOptionsItemSelected(MenuItem item) {
         if(item.getItemId() == R.id.action_do_task) {
             if(isOnline()) {
-                requestData("http://services.hanselandpetal.com/feeds/flowers.xml");
+                requestData("http://services.hanselandpetal.com/feeds/flowers.json");
             } else {
                 Toast.makeText(this, "Network isn't available", Toast.LENGTH_LONG).show();
             }
@@ -102,8 +103,8 @@ public class MainActivity extends AppCompatActivity {
         @Override
         protected void onPostExecute(String result) {
 
-            flowerList = FlowerXmlParser.parseFeed(result);
-
+            //flowerList = FlowerXmlParser.parseFeed(result);
+            flowerList = FlowerJsonParser.parseFeed(result);
             updateDisplay();
             tasks.remove(this);
             if(tasks.size() == 0) {

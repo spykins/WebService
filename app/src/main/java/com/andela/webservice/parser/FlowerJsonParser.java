@@ -22,6 +22,7 @@ public class FlowerJsonParser {
             for(int i = 0; i < ar.length(); i++) {
                 JSONObject obj = ar.getJSONObject(i);
                 Flower flower = new Flower();
+                flower.setName(obj.getString("name"));
                 flower.setProductId(obj.getInt("productId"));
                 flower.setCategory(obj.getString("category"));
                 flower.setInstructions(obj.getString("instructions"));
