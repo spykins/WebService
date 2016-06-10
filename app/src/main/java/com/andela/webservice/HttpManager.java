@@ -112,7 +112,7 @@ public class HttpManager {
                 created by the loginBuilder object
              */
 
-            con.addRequestProperty("AUTHORIZATION", loginBuilder.toString());
+            con.addRequestProperty("Authorization", loginBuilder.toString());
             //Now as long as we connect with the correct userName and password...
             // you should be able to connect and get data back
 
