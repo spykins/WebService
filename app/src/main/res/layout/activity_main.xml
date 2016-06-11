@@ -9,11 +9,10 @@
     android:paddingTop="@dimen/activity_vertical_margin"
     tools:context="com.andela.webservice.MainActivity">
 
-    <TextView
+    <ListView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:id="@+id/textView"
-        android:scrollbars="vertical"/>
+        android:id="@+id/list"/>
 
     <ProgressBar
         android:layout_width="wrap_content"
