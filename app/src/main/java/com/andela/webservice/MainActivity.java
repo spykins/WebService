@@ -1,27 +1,26 @@
 package com.andela.webservice;
 
+import android.app.ListActivity;
 import android.content.Context;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.os.AsyncTask;
-import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
-import android.text.method.ScrollingMovementMethod;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.ListView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import com.andela.webservice.model.Flower;
 import com.andela.webservice.parser.FlowerJsonParser;
-import com.andela.webservice.parser.FlowerXmlParser;
 
 import java.util.ArrayList;
 import java.util.List;
 
-public class MainActivity extends AppCompatActivity {
+public class MainActivity extends ListActivity {
     private TextView output;
     private ProgressBar progressBar;
     private List<MyTask> tasks;
@@ -34,8 +33,8 @@ public class MainActivity extends AppCompatActivity {
         progressBar = (ProgressBar) findViewById(R.id.progressBar1);
         progressBar.setVisibility(View.INVISIBLE);
         tasks = new ArrayList<>();
-        output = (TextView) findViewById(R.id.textView);
-        output.setMovementMethod(new ScrollingMovementMethod());
+        //output = (TextView) findViewById(R.id.textView);
+        //output.setMovementMethod(new ScrollingMovementMethod());
     }
 
     @Override
@@ -66,12 +65,15 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void updateDisplay() {
-        if(flowerList != null) {
+        /*if(flowerList != null) {
             for (Flower flower : flowerList) {
                 output.append(flower.getName() + "\n");
             }
 
-        }
+        }*/
+
+        FlowerAdapter adapter = new FlowerAdapter(this, R.layout.item_flower, flowerList);
+        setListAdapter(adapter);
     }
 
     protected boolean isOnline() {
