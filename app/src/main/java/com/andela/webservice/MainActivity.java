@@ -87,7 +87,8 @@ public class MainActivity extends ListActivity {
         }
     }
 
-    private class MyTask extends AsyncTask<String, String, String> {
+    private class MyTask extends AsyncTask<String, String, List<Flower>> {
+        //Async task now returns a List of Flower objects
         @Override
         protected void onPreExecute() {
             //updateDisplay("Starting task");
@@ -97,14 +98,19 @@ public class MainActivity extends ListActivity {
             tasks.add(this);
         }
 
+        /*
+            Doin the background parsing in the background thread
+         */
+
         @Override
-        protected String doInBackground(String... params) {
+        protected List<Flower> doInBackground(String... params) {
             String content = HttpManager.getData(params[0],"feeduser","feedpassword");
-            return content;
+            flowerList = FlowerJsonParser.parseFeed(content);
+            return flowerList;
         }
 
         @Override
-        protected void onPostExecute(String result) {
+        protected void onPostExecute(List<Flower> result) {
             tasks.remove(this);
             if(tasks.size() == 0) {
                 progressBar.setVisibility(View.INVISIBLE);
@@ -115,7 +121,7 @@ public class MainActivity extends ListActivity {
                 Toast.makeText(MainActivity.this, "Can't connect to webservice", Toast.LENGTH_LONG).show();
                 return;
             }
-            flowerList = FlowerJsonParser.parseFeed(result);
+            flowerList = result;
             updateDisplay();
 
         }
