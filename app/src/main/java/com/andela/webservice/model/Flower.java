@@ -1,5 +1,7 @@
 package com.andela.webservice.model;
 
+import android.graphics.Bitmap;
+
 /**
  * Created by Spykins on 08/06/16.
  */
@@ -10,6 +12,16 @@ public class Flower {
     private String instructions;
     private double price;
     private String photo;
+
+    public Bitmap getBitmap() {
+        return bitmap;
+    }
+
+    public void setBitmap(Bitmap bitmap) {
+        this.bitmap = bitmap;
+    }
+
+    private Bitmap bitmap;
 
     public String getCategory() {
         return category;
