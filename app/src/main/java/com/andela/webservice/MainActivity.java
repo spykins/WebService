@@ -2,6 +2,8 @@ package com.andela.webservice;
 
 import android.app.ListActivity;
 import android.content.Context;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.os.AsyncTask;
@@ -17,6 +19,9 @@ import android.widget.Toast;
 import com.andela.webservice.model.Flower;
 import com.andela.webservice.parser.FlowerJsonParser;
 
+import java.io.IOException;
+import java.io.InputStream;
+import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -105,7 +110,22 @@ public class MainActivity extends ListActivity {
         @Override
         protected List<Flower> doInBackground(String... params) {
             String content = HttpManager.getData(params[0],"feeduser","feedpassword");
-            flowerList = FlowerJsonParser.parseFeed(content);
+            flowerList = FlowerJsonParser.parseFeed(content); //getting data from JSon feed
+            //Getting image for each flower name in the list
+            for(Flower flower : flowerList) {
+                String imageUrl = PHOTO_BASE_URL + flower.getPhoto();
+                try {
+                    InputStream in = (InputStream) new URL(imageUrl).getContent();
+                    //This retrieves the entire content of the location in one request
+                    //It comes back as a blub of data n we can access it through the input stream
+                    Bitmap bitmap = BitmapFactory.decodeStream(in);
+                    flower.setBitmap(bitmap);
+                    in.close();
+
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
             return flowerList;
         }
 
