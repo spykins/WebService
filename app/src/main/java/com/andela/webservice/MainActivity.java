@@ -30,7 +30,7 @@ public class MainActivity extends ListActivity {
     private ProgressBar progressBar;
     private List<MyTask> tasks;
     private List<Flower> flowerList;
-    private static final String PHOTO_BASE_URL = "http://services.hanselandpetal.com/photos/";
+    public static final String PHOTO_BASE_URL = "http://services.hanselandpetal.com/photos/";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
