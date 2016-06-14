@@ -112,7 +112,7 @@ public class MainActivity extends ListActivity {
             String content = HttpManager.getData(params[0],"feeduser","feedpassword");
             flowerList = FlowerJsonParser.parseFeed(content); //getting data from JSon feed
             //Getting image for each flower name in the list
-            for(Flower flower : flowerList) {
+            /*for(Flower flower : flowerList) {
                 String imageUrl = PHOTO_BASE_URL + flower.getPhoto();
                 try {
                     InputStream in = (InputStream) new URL(imageUrl).getContent();
@@ -125,7 +125,8 @@ public class MainActivity extends ListActivity {
                 } catch (IOException e) {
                     e.printStackTrace();
                 }
-            }
+            }*/
+            //Now the image won't be available. We are going to use Lazy loading in the getView
             return flowerList;
         }
 
