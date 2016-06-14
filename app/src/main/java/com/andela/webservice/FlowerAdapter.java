@@ -64,9 +64,10 @@ public class FlowerAdapter extends ArrayAdapter<Flower> {
         TextView tv = (TextView) view.findViewById(R.id.textView1);
         tv.setText(flower.getName());
 
-        if(flower.getBitmap() != null) {
+        Bitmap bitmap = imageCache.get(flower.getProductId());
+        if(bitmap != null) {
             ImageView img = (ImageView) view.findViewById(R.id.imageView1);
-            img.setImageBitmap(flower.getBitmap());
+            img.setImageBitmap(bitmap);
         } else {
             FlowerAndView container = new FlowerAndView();
             container.flower = flower;
@@ -75,7 +76,6 @@ public class FlowerAdapter extends ArrayAdapter<Flower> {
             ImageLoader loader = new ImageLoader();
             loader.execute(container);
         }
-
 
         return view;
     }
@@ -109,7 +109,7 @@ public class FlowerAdapter extends ArrayAdapter<Flower> {
                 //This retrieves the entire content of the location in one request
                 //It comes back as a blub of data n we can access it through the input stream
                 Bitmap bitmap = BitmapFactory.decodeStream(in);
-                flower.setBitmap(bitmap);
+                //flower.setBitmap(bitmap);
                 in.close();
                 container.bitmap = bitmap;
                 return container;
@@ -124,7 +124,8 @@ public class FlowerAdapter extends ArrayAdapter<Flower> {
         protected void onPostExecute(FlowerAndView result) {
             ImageView img = (ImageView) result.view.findViewById(R.id.imageView1);
             img.setImageBitmap(result.bitmap);
-            result.flower.setBitmap(result.bitmap);
+            //result.flower.setBitmap(result.bitmap);
+            imageCache.put(result.flower.getProductId(), result.bitmap);
 
         }
     }
