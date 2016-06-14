@@ -5,6 +5,7 @@ import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.os.AsyncTask;
+import android.support.v4.util.LruCache;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -27,10 +28,28 @@ public class FlowerAdapter extends ArrayAdapter<Flower> {
     @SuppressWarnings("unused")
     private List<Flower> flowerList;
 
+    private LruCache<Integer, Bitmap> imageCache;
+    /*
+        An LRU cache takes two generic declarations, this will be for the Key and the Value type..
+        It is like a map...
+     */
+
     public FlowerAdapter(Context context, int resource, List<Flower> objects) {
         super(context, resource, objects);
         this.context = context;
         this.flowerList = objects;
+
+        final int maxMemory =  (int) (Runtime.getRuntime().maxMemory() / 1024);
+        final int cacheSize = maxMemory / 8; //use 1/8 of whatever is available..
+
+        //creating the image cache
+        imageCache = new LruCache<>(cacheSize);
+        /*
+            Now, we have a place where we can place the BitMap
+            each bitmap will be indexed by an Integer value... the integer will be the product id
+            that the bitmap is associated with
+         */
+
     }
 
     @Override
