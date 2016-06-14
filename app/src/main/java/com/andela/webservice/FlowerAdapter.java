@@ -6,6 +6,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.andela.webservice.model.Flower;
@@ -37,6 +38,9 @@ public class FlowerAdapter extends ArrayAdapter<Flower> {
         Flower flower = flowerList.get(position);
         TextView tv = (TextView) view.findViewById(R.id.textView1);
         tv.setText(flower.getName());
+
+        ImageView img = (ImageView) view.findViewById(R.id.imageView1);
+        img.setImageBitmap(flower.getBitmap());
         return view;
     }
 }
