@@ -59,9 +59,16 @@ public class MainActivity extends Activity {
     }
 
     private void requestData(String uri) {
-
+        RequestPackage p = new RequestPackage();
+        p.setMethod("GET");
+        p.setUri(uri);
+        p.setParam("param1","Value 1"); //key should always be all lower case without any spaces
+        //value can be any String with space, we are encoding it
+        p.setParam("param2","Value 2");
+        p.setParam("param3","Value 3");
+        p.setParam("param4","Value 4");
         MyTask task = new MyTask();
-        task.execute(uri);
+        task.execute(p);
     }
 
     protected void updateDisplay(String result) {
