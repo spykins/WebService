@@ -15,13 +15,15 @@ import java.net.URL;
  */
 public class HttpManager {
 
-    public static String getData(String uri) {
+    public static String getData(RequestPackage p) {
 
+        String uri = p.getUri();
         BufferedReader reader = null;
 
         try {
             URL url = new URL(uri);
             HttpURLConnection con = (HttpURLConnection) url.openConnection();
+            con.setRequestMethod(p.getMethod()); //This is value, GET, or POST
 
             StringBuilder sb = new StringBuilder();
             reader = new BufferedReader(new InputStreamReader(con.getInputStream()));
