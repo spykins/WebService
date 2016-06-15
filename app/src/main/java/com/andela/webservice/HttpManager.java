@@ -17,8 +17,14 @@ public class HttpManager {
 
     public static String getData(RequestPackage p) {
 
-        String uri = p.getUri();
         BufferedReader reader = null;
+        String uri = p.getUri();
+        //We need to append parameter only when we are making a get request
+        //if it's any other request, we will use the parameter in a different way
+
+        if(p.getMethod().equals("GET")) {
+            uri += "?" + p.getEncodedParams();
+        }
 
         try {
             URL url = new URL(uri);
