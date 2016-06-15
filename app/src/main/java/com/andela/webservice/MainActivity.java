@@ -78,7 +78,7 @@ public class MainActivity extends Activity {
         }
     }
 
-    private class MyTask extends AsyncTask<String, String, String> {
+    private class MyTask extends AsyncTask<RequestPackage, String, String> {
 
         @Override
         protected void onPreExecute() {
@@ -89,7 +89,7 @@ public class MainActivity extends Activity {
         }
 
         @Override
-        protected String doInBackground(String... params) {
+        protected String doInBackground(RequestPackage... params) {
             String content = HttpManager.getData(params[0]);
             return content;
         }
