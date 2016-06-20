@@ -50,7 +50,7 @@ public class MainActivity extends Activity {
     public boolean onOptionsItemSelected(MenuItem item) {
         if (item.getItemId() == R.id.action_do_task) {
             if (isOnline()) {
-                requestData("http://services.hanselandpetal.com/feeds/flowers.json");
+                requestData("http://169.254.173.50:8888/android/restful.php");
             } else {
                 Toast.makeText(this, "Network isn't available", Toast.LENGTH_LONG).show();
             }
