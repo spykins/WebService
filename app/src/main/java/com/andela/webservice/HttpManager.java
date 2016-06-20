@@ -1,13 +1,10 @@
 package com.andela.webservice;
 
 
-import android.util.Base64;
-
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
-import java.net.MalformedURLException;
 import java.net.URL;
 
 /**
@@ -29,8 +26,8 @@ public class HttpManager {
         try {
             URL url = new URL(uri);
             HttpURLConnection con = (HttpURLConnection) url.openConnection();
-            con.setRequestMethod(p.getMethod()); //This is value, GET, or POST
 
+            con.setRequestMethod(p.getMethod()); //This is value, GET, or POST
             StringBuilder sb = new StringBuilder();
             reader = new BufferedReader(new InputStreamReader(con.getInputStream()));
 
