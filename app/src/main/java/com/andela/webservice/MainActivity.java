@@ -60,7 +60,7 @@ public class MainActivity extends Activity {
 
     private void requestData(String uri) {
         RequestPackage p = new RequestPackage();
-        p.setMethod("GET");
+        p.setMethod("POST");
         p.setUri(uri);
         p.setParam("param1","Value 1"); //key should always be all lower case without any spaces
         //value can be any String with space, we are encoding it
