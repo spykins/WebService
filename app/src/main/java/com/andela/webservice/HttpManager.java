@@ -1,6 +1,8 @@
 package com.andela.webservice;
 
 
+import org.json.JSONObject;
+
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
@@ -29,15 +31,35 @@ public class HttpManager {
             HttpURLConnection con = (HttpURLConnection) url.openConnection();
             con.setRequestMethod(p.getMethod()); //This is value, GET, or POST
             //**** Note*** set the request method before writing the body
+
+            //After setting the request mode but before writing the parameter
+
+            JSONObject json = new JSONObject(p.getParams()); //we need to pass it an object that can be serialize
+            // into json format and specifically use the Map of paramters, tha will be contained within the
+            //request package
+            /*
+                    <?php
+                             $json = $_POST["params"];
+                             $params = json_decode($json);
+
+                              echo "Parsed from JSON:\r\n";
+                              foreach($params as $k => $v) {
+                                echo "$k = $v\r\n";
+                              }
+
+                          ?>
+
+             */
+            //The php script is expecting a json of key type param
+
+            String params = "params=" + json.toString();
+            //now we have a value that we can send to the server
             if(p.getMethod().equals("POST")) {
                 con.setDoOutput(true);
-                // This allows to output content to the body of the request
                 OutputStreamWriter writer = new OutputStreamWriter(con.getOutputStream());
-                //creating a write object that can write to the output stream and send information to the connection
-                writer.write(p.getEncodedParams()); // This gets the same param as the Get, with the & and the = sign
-                //all in the same place and the value encoded to send over the web... but instead of appending it to d uri
-                //we will place it in the body of the request
-                writer.flush(); //This flush anything written to the memory
+                writer.write(params); //instead of the encoded method, we write the params object
+                //Now we are writing the params into the request body
+                writer.flush();
             }
             StringBuilder sb = new StringBuilder();
             reader = new BufferedReader(new InputStreamReader(con.getInputStream()));
