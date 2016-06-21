@@ -1,38 +1,39 @@
 package com.andela.webservice;
 
-import android.app.Activity;
 import android.app.ListActivity;
 import android.content.Context;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.os.AsyncTask;
 import android.os.Bundle;
-import android.text.method.ScrollingMovementMethod;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.ListView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.andela.webservice.model.Flower;
+import com.andela.webservice.parser.FlowerJsonParser;
+
 import java.util.ArrayList;
 import java.util.List;
 
-public class MainActivity extends Activity {
+public class MainActivity extends ListActivity {
+
+    public static final String PHOTOS_BASE_URL =
+            "http://services.hanselandpetal.com/photos/";
 
     TextView output;
     ProgressBar pb;
     List<MyTask> tasks;
 
+    List<Flower> flowerList;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-
-//		Initialize the TextView for vertical scrolling
-        output = (TextView) findViewById(R.id.textView);
-        output.setMovementMethod(new ScrollingMovementMethod());
 
         pb = (ProgressBar) findViewById(R.id.progressBar1);
         pb.setVisibility(View.INVISIBLE);
@@ -50,7 +51,7 @@ public class MainActivity extends Activity {
     public boolean onOptionsItemSelected(MenuItem item) {
         if (item.getItemId() == R.id.action_do_task) {
             if (isOnline()) {
-                requestData("http://169.254.173.50:8888/android/restfuljson.php");
+                requestData("http://services.hanselandpetal.com/secure/flowers.json");
             } else {
                 Toast.makeText(this, "Network isn't available", Toast.LENGTH_LONG).show();
             }
@@ -59,20 +60,14 @@ public class MainActivity extends Activity {
     }
 
     private void requestData(String uri) {
-        RequestPackage p = new RequestPackage();
-        p.setMethod("POST");
-        p.setUri(uri);
-        p.setParam("param1","Value 1"); //key should always be all lower case without any spaces
-        //value can be any String with space, we are encoding it
-        p.setParam("param2","Value 2");
-        p.setParam("param3","Value 3");
-        p.setParam("param4","Value 4");
         MyTask task = new MyTask();
-        task.execute(p);
+        task.execute(uri);
     }
 
-    protected void updateDisplay(String result) {
-        output.append(result + "\n");
+    protected void updateDisplay() {
+        //Use FlowerAdapter to display data
+        FlowerAdapter adapter = new FlowerAdapter(this, R.layout.item_flower, flowerList);
+        setListAdapter(adapter);
     }
 
     protected boolean isOnline() {
@@ -85,7 +80,7 @@ public class MainActivity extends Activity {
         }
     }
 
-    private class MyTask extends AsyncTask<RequestPackage, String, String> {
+    private class MyTask extends AsyncTask<String, String, List<Flower>> {
 
         @Override
         protected void onPreExecute() {
@@ -96,20 +91,29 @@ public class MainActivity extends Activity {
         }
 
         @Override
-        protected String doInBackground(RequestPackage... params) {
-            String content = HttpManager.getData(params[0]);
-            return content;
+        protected List<Flower> doInBackground(String... params) {
+
+            String content = HttpManager.getData(params[0], "feeduser", "feedpassword");
+            flowerList = FlowerJsonParser.parseFeed(content);
+
+            return flowerList;
         }
 
         @Override
-        protected void onPostExecute(String result) {
+        protected void onPostExecute(List<Flower> result) {
 
             tasks.remove(this);
             if (tasks.size() == 0) {
                 pb.setVisibility(View.INVISIBLE);
             }
 
-            updateDisplay(result);
+            if (result == null) {
+                Toast.makeText(MainActivity.this, "Web service not available", Toast.LENGTH_LONG).show();
+                return;
+            }
+
+            flowerList = result;
+            updateDisplay();
 
         }
 
