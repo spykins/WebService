@@ -14,8 +14,10 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.andela.webservice.model.Flower;
+import com.squareup.okhttp.OkHttpClient;
 
 import java.io.InputStream;
+import java.net.HttpURLConnection;
 import java.net.URL;
 import java.util.List;
 
@@ -25,6 +27,7 @@ import java.util.List;
 public class FlowerAdapter extends ArrayAdapter<Flower> {
     private Context context;
     private List<Flower> flowerList;
+    private OkHttpClient client = new OkHttpClient();
 
     private LruCache<Integer, Bitmap> imageCache;
 
@@ -84,7 +87,11 @@ public class FlowerAdapter extends ArrayAdapter<Flower> {
 
             try {
                 String imageUrl = MainActivity.PHOTOS_BASE_URL + flower.getPhoto();
-                InputStream in = (InputStream) new URL(imageUrl).getContent();
+                HttpURLConnection con = client.open(new URL(imageUrl));
+
+                //InputStream in = (InputStream) new URL(imageUrl).getContent();
+                InputStream in = con.getInputStream();
+
                 Bitmap bitmap = BitmapFactory.decodeStream(in);
                 flower.setBitmap(bitmap);
                 in.close();
