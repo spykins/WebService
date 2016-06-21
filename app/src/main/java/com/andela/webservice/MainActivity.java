@@ -19,6 +19,11 @@ import com.andela.webservice.parser.FlowerJsonParser;
 import java.util.ArrayList;
 import java.util.List;
 
+import retrofit.Callback;
+import retrofit.RestAdapter;
+import retrofit.RetrofitError;
+import retrofit.client.Response;
+
 public class MainActivity extends ListActivity {
 
     public static final String PHOTOS_BASE_URL =
@@ -29,7 +34,6 @@ public class MainActivity extends ListActivity {
 
     TextView output;
     ProgressBar pb;
-    List<MyTask> tasks;
 
     List<Flower> flowerList;
 
@@ -40,8 +44,6 @@ public class MainActivity extends ListActivity {
 
         pb = (ProgressBar) findViewById(R.id.progressBar1);
         pb.setVisibility(View.INVISIBLE);
-
-        tasks = new ArrayList<>();
     }
 
     @Override
@@ -63,8 +65,26 @@ public class MainActivity extends ListActivity {
     }
 
     private void requestData(String uri) {
-        MyTask task = new MyTask();
-        task.execute(uri);
+        RestAdapter adapter = new RestAdapter.Builder()
+                .setEndpoint(ENDPOINT)
+                .build(); // This screate the adapter object
+        // we are ready to implement the API that we alread defined
+        FlowersAPI api = adapter.create(FlowersAPI.class);
+        //pass in the class property of the API interface
+        //now we are ready to make a request
+        api.getFeed(new Callback<List<Flower>>() {
+            @Override
+            public void success(List<Flower> flowers, Response response) {
+                flowerList = flowers;
+                updateDisplay();
+            }
+
+            @Override
+            public void failure(RetrofitError retrofitError) {
+
+            }
+        });
+        //This argument ask for a response object, that will be what we declared that it will return a list of Flowers
     }
 
     protected void updateDisplay() {
@@ -83,7 +103,7 @@ public class MainActivity extends ListActivity {
         }
     }
 
-    private class MyTask extends AsyncTask<String, String, List<Flower>> {
+    /*private class MyTask extends AsyncTask<String, String, List<Flower>> {
 
         @Override
         protected void onPreExecute() {
@@ -120,6 +140,6 @@ public class MainActivity extends ListActivity {
 
         }
 
-    }
+    }*/
 
 }
