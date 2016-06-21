@@ -6,7 +6,6 @@ import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.os.AsyncTask;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -16,12 +15,8 @@ import android.widget.Toast;
 
 import com.andela.webservice.model.Flower;
 import com.andela.webservice.parser.FlowerJsonParser;
-import com.android.volley.RequestQueue;
-import com.android.volley.Response;
-import com.android.volley.VolleyError;
-import com.android.volley.toolbox.StringRequest;
-import com.android.volley.toolbox.Volley;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class MainActivity extends ListActivity {
@@ -31,6 +26,7 @@ public class MainActivity extends ListActivity {
 
     TextView output;
     ProgressBar pb;
+    List<MyTask> tasks;
 
     List<Flower> flowerList;
 
@@ -42,6 +38,7 @@ public class MainActivity extends ListActivity {
         pb = (ProgressBar) findViewById(R.id.progressBar1);
         pb.setVisibility(View.INVISIBLE);
 
+        tasks = new ArrayList<>();
     }
 
     @Override
@@ -63,29 +60,8 @@ public class MainActivity extends ListActivity {
     }
 
     private void requestData(String uri) {
-        // To work with volley, we construct a request object
-        //There are different types of request object
-
-        StringRequest request = new StringRequest(uri,
-
-                new Response.Listener<String>() {
-                    @Override
-                    public void onResponse(String respose) {
-                        flowerList = FlowerJsonParser.parseFeed(respose);
-                        updateDisplay();
-                    }
-                },
-
-                new Response.ErrorListener() {
-                    @Override
-                    public void onErrorResponse(VolleyError ex) {
-                        Toast.makeText(MainActivity.this, ex.getMessage(), Toast.LENGTH_LONG).show();
-                    }
-                }
-        );
-
-        RequestQueue queue = Volley.newRequestQueue(this);
-        queue.add(request);
+        MyTask task = new MyTask();
+        task.execute(uri);
     }
 
     protected void updateDisplay() {
@@ -102,6 +78,45 @@ public class MainActivity extends ListActivity {
         } else {
             return false;
         }
+    }
+
+    private class MyTask extends AsyncTask<String, String, List<Flower>> {
+
+        @Override
+        protected void onPreExecute() {
+            if (tasks.size() == 0) {
+                pb.setVisibility(View.VISIBLE);
+            }
+            tasks.add(this);
+        }
+
+        @Override
+        protected List<Flower> doInBackground(String... params) {
+
+            String content = HttpManager.getData(params[0]);
+            flowerList = FlowerJsonParser.parseFeed(content);
+
+            return flowerList;
+        }
+
+        @Override
+        protected void onPostExecute(List<Flower> result) {
+
+            tasks.remove(this);
+            if (tasks.size() == 0) {
+                pb.setVisibility(View.INVISIBLE);
+            }
+
+            if (result == null) {
+                Toast.makeText(MainActivity.this, "Web service not available", Toast.LENGTH_LONG).show();
+                return;
+            }
+
+            flowerList = result;
+            updateDisplay();
+
+        }
+
     }
 
 }
