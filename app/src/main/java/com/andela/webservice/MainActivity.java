@@ -23,6 +23,9 @@ public class MainActivity extends ListActivity {
 
     public static final String PHOTOS_BASE_URL =
             "http://services.hanselandpetal.com/photos/";
+    public static final String ENDPOINT = "http://services.hanselandpetal.com";
+    //This is the base URL, we have described where the web service lives, the complete
+    // url lives in the API, if we take the end point and the api defination and put the strings together, that's the complete location of the feed
 
     TextView output;
     ProgressBar pb;
