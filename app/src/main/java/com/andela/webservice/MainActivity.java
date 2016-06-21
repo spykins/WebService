@@ -6,6 +6,7 @@ import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -21,7 +22,6 @@ import com.android.volley.VolleyError;
 import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
 
-import java.util.ArrayList;
 import java.util.List;
 
 public class MainActivity extends ListActivity {
@@ -54,7 +54,7 @@ public class MainActivity extends ListActivity {
     public boolean onOptionsItemSelected(MenuItem item) {
         if (item.getItemId() == R.id.action_do_task) {
             if (isOnline()) {
-                requestData("http://services.hanselandpetal.com/secure/flowers.json");
+                requestData("http://services.hanselandpetal.com/feeds/flowers.json");
             } else {
                 Toast.makeText(this, "Network isn't available", Toast.LENGTH_LONG).show();
             }
@@ -79,7 +79,7 @@ public class MainActivity extends ListActivity {
                 new Response.ErrorListener() {
                     @Override
                     public void onErrorResponse(VolleyError ex) {
-                        Toast.makeText(MainActivity.this, ex.getMessage(), Toast.LENGTH_LONG);
+                        Toast.makeText(MainActivity.this, ex.getMessage(), Toast.LENGTH_LONG).show();
                     }
                 }
         );
@@ -103,48 +103,5 @@ public class MainActivity extends ListActivity {
             return false;
         }
     }
-
-    //volley will handle this
-
-/*
-    private class MyTask extends AsyncTask<String, String, List<Flower>> {
-
-        @Override
-        protected void onPreExecute() {
-            if (tasks.size() == 0) {
-                pb.setVisibility(View.VISIBLE);
-            }
-            tasks.add(this);
-        }
-
-        @Override
-        protected List<Flower> doInBackground(String... params) {
-
-            String content = HttpManager.getData(params[0], "feeduser", "feedpassword");
-            flowerList = FlowerJsonParser.parseFeed(content);
-
-            return flowerList;
-        }
-
-        @Override
-        protected void onPostExecute(List<Flower> result) {
-
-            tasks.remove(this);
-            if (tasks.size() == 0) {
-                pb.setVisibility(View.INVISIBLE);
-            }
-
-            if (result == null) {
-                Toast.makeText(MainActivity.this, "Web service not available", Toast.LENGTH_LONG).show();
-                return;
-            }
-
-            flowerList = result;
-            updateDisplay();
-
-        }
-
-    }
-*/
 
 }
