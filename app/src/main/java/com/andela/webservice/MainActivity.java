@@ -15,6 +15,11 @@ import android.widget.Toast;
 
 import com.andela.webservice.model.Flower;
 import com.andela.webservice.parser.FlowerJsonParser;
+import com.android.volley.RequestQueue;
+import com.android.volley.Response;
+import com.android.volley.VolleyError;
+import com.android.volley.toolbox.StringRequest;
+import com.android.volley.toolbox.Volley;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -26,7 +31,6 @@ public class MainActivity extends ListActivity {
 
     TextView output;
     ProgressBar pb;
-    List<MyTask> tasks;
 
     List<Flower> flowerList;
 
@@ -38,7 +42,6 @@ public class MainActivity extends ListActivity {
         pb = (ProgressBar) findViewById(R.id.progressBar1);
         pb.setVisibility(View.INVISIBLE);
 
-        tasks = new ArrayList<>();
     }
 
     @Override
@@ -60,8 +63,29 @@ public class MainActivity extends ListActivity {
     }
 
     private void requestData(String uri) {
-        MyTask task = new MyTask();
-        task.execute(uri);
+        // To work with volley, we construct a request object
+        //There are different types of request object
+
+        StringRequest request = new StringRequest(uri,
+
+                new Response.Listener<String>() {
+                    @Override
+                    public void onResponse(String respose) {
+                        flowerList = FlowerJsonParser.parseFeed(respose);
+                        updateDisplay();
+                    }
+                },
+
+                new Response.ErrorListener() {
+                    @Override
+                    public void onErrorResponse(VolleyError ex) {
+                        Toast.makeText(MainActivity.this, ex.getMessage(), Toast.LENGTH_LONG);
+                    }
+                }
+        );
+
+        RequestQueue queue = Volley.newRequestQueue(this);
+        queue.add(request);
     }
 
     protected void updateDisplay() {
@@ -80,6 +104,9 @@ public class MainActivity extends ListActivity {
         }
     }
 
+    //volley will handle this
+
+/*
     private class MyTask extends AsyncTask<String, String, List<Flower>> {
 
         @Override
@@ -118,5 +145,6 @@ public class MainActivity extends ListActivity {
         }
 
     }
+*/
 
 }
