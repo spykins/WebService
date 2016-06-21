@@ -9,6 +9,8 @@ import java.net.URL;
 import android.util.Base64;
 import android.util.Log;
 
+import com.squareup.okhttp.OkHttpClient;
+
 /**
  * Created by Spykins on 08/06/16.
  */
@@ -21,7 +23,9 @@ public class HttpManager {
 
         try {
             URL url = new URL(uri);
-            HttpURLConnection con = (HttpURLConnection) url.openConnection();
+            OkHttpClient client = new OkHttpClient();
+            //HttpURLConnection con = (HttpURLConnection) url.openConnection();
+            HttpURLConnection con = client.open(url);
 
             StringBuilder sb = new StringBuilder();
             reader = new BufferedReader(new InputStreamReader(con.getInputStream()));
