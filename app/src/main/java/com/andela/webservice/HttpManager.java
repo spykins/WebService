@@ -23,9 +23,7 @@ public class HttpManager {
 
         try {
             URL url = new URL(uri);
-            OkHttpClient client = new OkHttpClient();
-            //HttpURLConnection con = (HttpURLConnection) url.openConnection();
-            HttpURLConnection con = client.open(url);
+            HttpURLConnection con = (HttpURLConnection) url.openConnection();
 
             StringBuilder sb = new StringBuilder();
             reader = new BufferedReader(new InputStreamReader(con.getInputStream()));

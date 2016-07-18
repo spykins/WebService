@@ -25,4 +25,6 @@ dependencies {
     compile 'com.android.support:appcompat-v7:23.2.1'
     compile files('libs/okhttp-1.5.4.jar')
     compile files('libs/volley.jar')
+    compile files('libs/retrofit-1.5.1.jar')
+    compile files('libs/gson-2.2.4.jar')
 }

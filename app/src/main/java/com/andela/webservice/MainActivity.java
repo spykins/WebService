@@ -6,7 +6,6 @@ import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.os.AsyncTask;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -16,18 +15,22 @@ import android.widget.Toast;
 
 import com.andela.webservice.model.Flower;
 import com.andela.webservice.parser.FlowerJsonParser;
-import com.android.volley.RequestQueue;
-import com.android.volley.Response;
-import com.android.volley.VolleyError;
-import com.android.volley.toolbox.StringRequest;
-import com.android.volley.toolbox.Volley;
 
+import java.util.ArrayList;
 import java.util.List;
+
+import retrofit.Callback;
+import retrofit.RestAdapter;
+import retrofit.RetrofitError;
+import retrofit.client.Response;
 
 public class MainActivity extends ListActivity {
 
     public static final String PHOTOS_BASE_URL =
             "http://services.hanselandpetal.com/photos/";
+    public static final String ENDPOINT = "http://services.hanselandpetal.com";
+    //This is the base URL, we have described where the web service lives, the complete
+    // url lives in the API, if we take the end point and the api defination and put the strings together, that's the complete location of the feed
 
     TextView output;
     ProgressBar pb;
@@ -41,7 +44,6 @@ public class MainActivity extends ListActivity {
 
         pb = (ProgressBar) findViewById(R.id.progressBar1);
         pb.setVisibility(View.INVISIBLE);
-
     }
 
     @Override
@@ -63,29 +65,26 @@ public class MainActivity extends ListActivity {
     }
 
     private void requestData(String uri) {
-        // To work with volley, we construct a request object
-        //There are different types of request object
+        RestAdapter adapter = new RestAdapter.Builder()
+                .setEndpoint(ENDPOINT)
+                .build(); // This screate the adapter object
+        // we are ready to implement the API that we alread defined
+        FlowersAPI api = adapter.create(FlowersAPI.class);
+        //pass in the class property of the API interface
+        //now we are ready to make a request
+        api.getFeed(new Callback<List<Flower>>() {
+            @Override
+            public void success(List<Flower> flowers, Response response) {
+                flowerList = flowers;
+                updateDisplay();
+            }
 
-        StringRequest request = new StringRequest(uri,
+            @Override
+            public void failure(RetrofitError retrofitError) {
 
-                new Response.Listener<String>() {
-                    @Override
-                    public void onResponse(String respose) {
-                        flowerList = FlowerJsonParser.parseFeed(respose);
-                        updateDisplay();
-                    }
-                },
-
-                new Response.ErrorListener() {
-                    @Override
-                    public void onErrorResponse(VolleyError ex) {
-                        Toast.makeText(MainActivity.this, ex.getMessage(), Toast.LENGTH_LONG).show();
-                    }
-                }
-        );
-
-        RequestQueue queue = Volley.newRequestQueue(this);
-        queue.add(request);
+            }
+        });
+        //This argument ask for a response object, that will be what we declared that it will return a list of Flowers
     }
 
     protected void updateDisplay() {
@@ -103,5 +102,44 @@ public class MainActivity extends ListActivity {
             return false;
         }
     }
+
+    /*private class MyTask extends AsyncTask<String, String, List<Flower>> {
+
+        @Override
+        protected void onPreExecute() {
+            if (tasks.size() == 0) {
+                pb.setVisibility(View.VISIBLE);
+            }
+            tasks.add(this);
+        }
+
+        @Override
+        protected List<Flower> doInBackground(String... params) {
+
+            String content = HttpManager.getData(params[0]);
+            flowerList = FlowerJsonParser.parseFeed(content);
+
+            return flowerList;
+        }
+
+        @Override
+        protected void onPostExecute(List<Flower> result) {
+
+            tasks.remove(this);
+            if (tasks.size() == 0) {
+                pb.setVisibility(View.INVISIBLE);
+            }
+
+            if (result == null) {
+                Toast.makeText(MainActivity.this, "Web service not available", Toast.LENGTH_LONG).show();
+                return;
+            }
+
+            flowerList = result;
+            updateDisplay();
+
+        }
+
+    }*/
 
 }
